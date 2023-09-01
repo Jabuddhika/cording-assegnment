@@ -6,5 +6,7 @@ import java.util.List;
 
 public interface InvoiceService {
 
-    public List<InvoiceDTO> findAllInvoices();
+    public List<InvoiceDTO> findAllInvoicesWithSortingAndPaging(int page,int size,String sortValue);
+
+    public List<InvoiceDTO> findAllInvoicesWithPaging(int page,int size);
 }

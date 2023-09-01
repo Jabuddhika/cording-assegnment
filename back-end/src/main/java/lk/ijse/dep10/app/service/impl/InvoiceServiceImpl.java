@@ -6,6 +6,7 @@ import lk.ijse.dep10.app.service.InvoiceService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +27,15 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
-    public List<InvoiceDTO> findAllInvoices() {
-        return invoiceRepository.findAll().stream().map(elm->mapper.map(elm,InvoiceDTO.class)).collect(Collectors.toList());
+    public List<InvoiceDTO> findAllInvoicesWithPaging(int page,int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return invoiceRepository.findAll(pageable).stream().map(elm->mapper.map(elm,InvoiceDTO.class)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<InvoiceDTO> findAllInvoicesWithSortingAndPaging(int page,int size,String sortValue) {
+        Sort id = Sort.by(Sort.Direction.DESC,sortValue);
+        Pageable pageable = PageRequest.of(page, size,id);
+        return invoiceRepository.findAll(pageable).stream().map(elm->mapper.map(elm,InvoiceDTO.class)).collect(Collectors.toList());
     }
 }

@@ -19,7 +19,7 @@ public class DetailRestController {
 
     @GetMapping("/{invoiceId}")
     public List<DetailDTO> getAllDetails(@PathVariable Integer invoiceId){
-        return detailService.findDetailByInvoiceId(invoiceId);
+        return detailService.findDetailByInvoiceIdWithSort(invoiceId);
     }
 
 }

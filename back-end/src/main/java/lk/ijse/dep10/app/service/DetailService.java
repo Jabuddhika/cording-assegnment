@@ -6,6 +6,5 @@ import lk.ijse.dep10.app.entity.Detail;
 import java.util.List;
 
 public interface DetailService {
-
-    public List<DetailDTO> findDetailByInvoiceId(Integer invoiceId);
+    public List<DetailDTO> findDetailByInvoiceIdWithSort(Integer invoiceId);
 }
