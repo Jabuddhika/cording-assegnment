@@ -5,12 +5,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Access;
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class InvoiceDTO {
+public class InvoiceDTO implements Serializable {
 
     private Integer id;
 

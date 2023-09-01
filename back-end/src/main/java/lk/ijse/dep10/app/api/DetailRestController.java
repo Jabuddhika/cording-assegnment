@@ -8,6 +8,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/details")
+@CrossOrigin
 public class DetailRestController {
 
     private final DetailService detailService;

@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 @Data
 @Entity
 @Table(name = "invoice")
-public class Invoice {
+public class Invoice extends SuperEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
