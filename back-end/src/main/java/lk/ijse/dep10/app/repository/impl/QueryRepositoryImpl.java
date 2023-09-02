@@ -16,17 +16,15 @@ public class QueryRepositoryImpl implements QueryRepository {
     @PersistenceContext
     private EntityManager entityManager;
     @Override
-    public Optional<DetailDTO2> findTotalPaidAmountByQuery(Integer invoiceId) throws Exception{
+    public DetailDTO2 findTotalPaidAmountByQuery(Integer invoiceId) throws Exception{
 
         String query = "SELECT invoice_id as invoiceId,SUM(paid_amount) as totalPaidAmount FROM code_app.detail WHERE invoice_id=? GROUP BY invoice_id";
 
-            try {
-                Tuple tuple = (Tuple) entityManager.createNativeQuery(query, Tuple.class).setParameter(1, invoiceId).getSingleResult();
-                return Optional.of(new DetailDTO2(tuple.get("invoiceId", Integer.class), tuple.get("totalPaidAmount", BigDecimal.class)));
+        Tuple tuple = (Tuple) entityManager.createNativeQuery(query, Tuple.class).setParameter(1, invoiceId).getSingleResult();
 
-            }catch (RecordNotFoundException e){
-                return Optional.empty();
-            }
+
+        return new DetailDTO2(tuple.get("invoiceId", Integer.class), tuple.get("totalPaidAmount", BigDecimal.class));
+
 
 
 

@@ -6,8 +6,6 @@ import lk.ijse.dep10.app.repository.DetailRepository;
 import lk.ijse.dep10.app.repository.InvoiceRepository;
 import lk.ijse.dep10.app.repository.QueryRepository;
 import lk.ijse.dep10.app.service.InvoiceService;
-import lk.ijse.dep10.app.service.exception.BOException;
-import lk.ijse.dep10.app.service.exception.RecordNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,16 +45,14 @@ public class InvoiceServiceImpl implements InvoiceService {
                 map(elm -> mapper.map(elm, InvoiceDTO.class)).collect(Collectors.toList());
 
         invoiceDTOList.stream().forEach(elm->{
-            BigDecimal totalPaidAmount = null;
-            try {
-                totalPaidAmount = findTotalPaidAmountByQuery(elm.getId()).getTotalPaidAmount();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+
+            if(findTotalPaidAmountByQuery(elm.getId()).isPresent()){
+              elm.setTotalPaidAmount(findTotalPaidAmountByQuery(elm.getId()).get().getTotalPaidAmount());
+            }else {
+                elm.setTotalPaidAmount(new BigDecimal(0));
             }
-            elm.setTotalPaidAmount(totalPaidAmount);
 
         });
-
         return invoiceDTOList;
 
     }
@@ -68,9 +65,12 @@ public class InvoiceServiceImpl implements InvoiceService {
 
 
     @Override
-    public DetailDTO2 findTotalPaidAmountByQuery(Integer invoiceId) throws Exception {
-        return queryRepository.findTotalPaidAmountByQuery(invoiceId)
-                .orElseThrow(() -> new RecordNotFoundException("No invoiceId Not found: " + invoiceId));
+    public Optional<DetailDTO2> findTotalPaidAmountByQuery(Integer invoiceId)   {
+        try {
+            return Optional.of(queryRepository.findTotalPaidAmountByQuery(invoiceId));
+        } catch (Exception e) {
+           return Optional.empty();
+        }
     }
 
 

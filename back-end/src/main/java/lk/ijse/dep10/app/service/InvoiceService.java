@@ -5,6 +5,7 @@ import lk.ijse.dep10.app.dto.DetailDTO2;
 import lk.ijse.dep10.app.dto.InvoiceDTO;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface InvoiceService {
 
@@ -12,7 +13,7 @@ public interface InvoiceService {
 
      List<InvoiceDTO> findAllInvoicesWithPaging(int page,int size);
 
-     DetailDTO2 findTotalPaidAmountByQuery(Integer invoiceId) throws Exception;
+     Optional<DetailDTO2> findTotalPaidAmountByQuery(Integer invoiceId) throws Exception;
 
 
 }

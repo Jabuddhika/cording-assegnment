@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface QueryRepository {
 
-    Optional<DetailDTO2> findTotalPaidAmountByQuery(Integer invoiceId) throws Exception;
+    DetailDTO2 findTotalPaidAmountByQuery(Integer invoiceId) throws Exception;
 }
