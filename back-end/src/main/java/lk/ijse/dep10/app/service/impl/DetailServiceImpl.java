@@ -33,4 +33,7 @@ public class DetailServiceImpl implements DetailService {
         Sort id = Sort.by(Sort.Direction.ASC,"id");
         return detailRepository.findDetailByInvoiceId(invoiceId,id).stream().map(elm->mapper.map(elm, DetailDTO.class)).collect(Collectors.toList());
     }
+
+
+
 }

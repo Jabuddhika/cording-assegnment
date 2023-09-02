@@ -1,7 +1,11 @@
 package lk.ijse.dep10.app.service.impl;
 
+import lk.ijse.dep10.app.dto.DetailDTO2;
 import lk.ijse.dep10.app.dto.InvoiceDTO;
+import lk.ijse.dep10.app.entity.Invoice;
+import lk.ijse.dep10.app.repository.DetailRepository;
 import lk.ijse.dep10.app.repository.InvoiceRepository;
+import lk.ijse.dep10.app.repository.QueryRepository;
 import lk.ijse.dep10.app.service.InvoiceService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.PageRequest;
@@ -10,8 +14,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -19,23 +25,44 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     private final InvoiceRepository invoiceRepository;
 
+    private final DetailRepository detailRepository;
+
+
+    private final QueryRepository queryRepository;
+
     private final ModelMapper mapper;
 
-    public InvoiceServiceImpl(InvoiceRepository invoiceRepository, ModelMapper mapper) {
+    public InvoiceServiceImpl(InvoiceRepository invoiceRepository, DetailRepository detailRepository, QueryRepository queryRepository, ModelMapper mapper) {
         this.invoiceRepository = invoiceRepository;
+        this.detailRepository = detailRepository;
+        this.queryRepository = queryRepository;
         this.mapper = mapper;
     }
 
     @Override
     public List<InvoiceDTO> findAllInvoicesWithPaging(int page,int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return invoiceRepository.findAll(pageable).stream().map(elm->mapper.map(elm,InvoiceDTO.class)).collect(Collectors.toList());
+        List<InvoiceDTO> invoiceDTOList = invoiceRepository.findAllInvoicesWithPaging(pageable).stream().
+                map(elm -> mapper.map(elm, InvoiceDTO.class)).collect(Collectors.toList());
+
+        invoiceDTOList.stream().forEach(elm->{
+            BigDecimal totalPaidAmount = queryRepository.findOrdersByQuery(elm.getId()).getTotalPaidAmount();
+            elm.setTotalPaidAmount(totalPaidAmount);
+        });
+
+        return invoiceDTOList;
+
+
     }
 
     @Override
     public List<InvoiceDTO> findAllInvoicesWithSortingAndPaging(int page,int size,String sortValue) {
-        Sort id = Sort.by(Sort.Direction.DESC,sortValue);
+        Sort id = Sort.by(Sort.Direction.ASC,sortValue);
         Pageable pageable = PageRequest.of(page, size,id);
-        return invoiceRepository.findAll(pageable).stream().map(elm->mapper.map(elm,InvoiceDTO.class)).collect(Collectors.toList());
+        return invoiceRepository.findAllInvoicesWithSortingAndPaging(pageable).stream().map(elm->mapper.map(elm,InvoiceDTO.class)).collect(Collectors.toList());
     }
+
+
+
+
 }

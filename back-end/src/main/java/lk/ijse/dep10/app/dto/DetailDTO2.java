@@ -4,18 +4,19 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-public class DetailDTO implements Serializable {
+public class DetailDTO2 implements Serializable{
 
-    private Integer detailId;
+    private Integer invoiceId;
 
-    private BigDecimal paidAmount;
-
-
+    private BigDecimal totalPaidAmount;
 
 }

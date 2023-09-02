@@ -26,4 +26,7 @@ public class Invoice extends SuperEntity {
 
     @Column(name = "total_amount",nullable = false)
     private BigDecimal totalAmount;
+
+
+
 }

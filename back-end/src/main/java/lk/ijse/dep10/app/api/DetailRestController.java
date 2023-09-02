@@ -14,6 +14,7 @@ public class DetailRestController {
     private final DetailService detailService;
 
     public DetailRestController(DetailService detailService) {
+
         this.detailService = detailService;
     }
 

@@ -18,6 +18,7 @@ public class InvoiceRestController {
     }
     @GetMapping("/{page}/{size}")
     public List<InvoiceDTO> getAllInvoicesWithPaging(@PathVariable Integer page, @PathVariable Integer size){
+        System.out.println("page/size");
         return invoiceService.findAllInvoicesWithPaging(page,size);
     }
 
