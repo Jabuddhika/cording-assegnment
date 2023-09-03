@@ -76,12 +76,6 @@ public class InvoiceServiceImpl implements InvoiceService {
         }
     }
 
-    @Override
-    public long getInvoicesCount() {
-
-        return invoiceRepository.count();
-    }
-
 
    // create private method to get each totalPaid amount with all of invoices
     private List<InvoiceDTO> setTotalPaidAmountWithFullCount(List<InvoiceDTO> invoiceDTOList){

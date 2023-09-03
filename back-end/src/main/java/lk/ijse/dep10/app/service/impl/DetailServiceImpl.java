@@ -17,14 +17,10 @@ import java.util.stream.Collectors;
 public class DetailServiceImpl implements DetailService {
 
     private final DetailRepository detailRepository;
-
-    private final InvoiceRepository invoiceRepository;
-
     private final ModelMapper mapper;
 
-    public DetailServiceImpl(DetailRepository detailRepository, InvoiceRepository invoiceRepository, ModelMapper mapper) {
+    public DetailServiceImpl(DetailRepository detailRepository,ModelMapper mapper) {
         this.detailRepository = detailRepository;
-        this.invoiceRepository = invoiceRepository;
         this.mapper = mapper;
     }
 
