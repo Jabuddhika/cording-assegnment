@@ -28,6 +28,7 @@ public class DetailServiceImpl implements DetailService {
         this.mapper = mapper;
     }
 
+    //find the detail using invoice id
     @Override
     public List<DetailDTO> findDetailByInvoiceIdWithSort(Integer invoiceId) {
         Sort id = Sort.by(Sort.Direction.ASC,"id");

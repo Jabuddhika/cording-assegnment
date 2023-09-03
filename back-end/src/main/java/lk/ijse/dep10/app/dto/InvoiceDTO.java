@@ -20,6 +20,8 @@ public class InvoiceDTO implements Serializable {
 
     private BigDecimal totalPaidAmount;
 
+    private long totalPages;
+
 
 
 

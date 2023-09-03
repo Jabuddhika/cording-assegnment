@@ -45,17 +45,28 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     }
     @Override
-    public List<InvoiceDTO> findAllInvoicesWithSortingAndPaging(int page,int size,String sortValue) {
+    public List<InvoiceDTO> findAllInvoicesWithSortingDesAndPaging(int page,int size,String sortValue) {
         Sort id = Sort.by(Sort.Direction.DESC,sortValue);
         Pageable pageable = PageRequest.of(page, size,id);
         List<InvoiceDTO> invoiceDTOList = invoiceRepository.findAll(pageable).stream().
                 map(elm -> mapper.map(elm, InvoiceDTO.class)).collect(Collectors.toList());
 
-      return setTotalPaidAmountWithFullCount(invoiceDTOList);
+        return setTotalPaidAmountWithFullCount(invoiceDTOList); //call the private method to get total paid amount
 
     }
 
+    @Override
+    public List<InvoiceDTO> findAllInvoicesWithSortingAseAndPaging(Integer page, Integer size, String sortParam) {
+        Sort id = Sort.by(Sort.Direction.ASC,sortParam);
+        Pageable pageable = PageRequest.of(page, size,id);
+        List<InvoiceDTO> invoiceDTOList = invoiceRepository.findAll(pageable).stream().
+                map(elm -> mapper.map(elm, InvoiceDTO.class)).collect(Collectors.toList());
 
+        return setTotalPaidAmountWithFullCount(invoiceDTOList); //call the private method to get total paid amount
+    }
+
+
+    //find total paid amount in detail table using query (sum(paid_amount ))
     @Override
     public Optional<DetailDTO2> findTotalPaidAmountByQuery(Integer invoiceId)   {
         try {
@@ -72,9 +83,13 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
 
+   // create private method to get each totalPaid amount with all of invoices
     private List<InvoiceDTO> setTotalPaidAmountWithFullCount(List<InvoiceDTO> invoiceDTOList){
-        invoiceDTOList.stream().forEach(elm->{
 
+        long count = invoiceRepository.count();
+
+        invoiceDTOList.stream().forEach(elm->{
+            elm.setTotalPages(count);
 
             if(findTotalPaidAmountByQuery(elm.getId()).isPresent()){
                 elm.setTotalPaidAmount(findTotalPaidAmountByQuery(elm.getId()).get().getTotalPaidAmount());

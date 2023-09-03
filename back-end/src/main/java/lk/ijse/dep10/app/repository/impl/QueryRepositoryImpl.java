@@ -18,16 +18,14 @@ public class QueryRepositoryImpl implements QueryRepository {
     @Override
     public DetailDTO2 findTotalPaidAmountByQuery(Integer invoiceId) throws Exception{
 
-        String query = "SELECT invoice_id as invoiceId,SUM(paid_amount) as totalPaidAmount FROM code_app.detail WHERE invoice_id=? GROUP BY invoice_id";
+        String query = "SELECT invoice_id as invoiceId,SUM(paid_amount) as totalPaidAmount FROM code_app.detail " +
+                "WHERE invoice_id=? GROUP BY invoice_id";
 
-        Tuple tuple = (Tuple) entityManager.createNativeQuery(query, Tuple.class).setParameter(1, invoiceId).getSingleResult();
+        Tuple tuple = (Tuple) entityManager.createNativeQuery(query, Tuple.class).
+                setParameter(1, invoiceId).getSingleResult();
 
 
         return new DetailDTO2(tuple.get("invoiceId", Integer.class), tuple.get("totalPaidAmount", BigDecimal.class));
-
-
-
-
 
 
     }

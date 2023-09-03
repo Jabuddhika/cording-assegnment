@@ -19,15 +19,19 @@ public class InvoiceRestController {
     }
     @GetMapping("/{page}/{size}")
     public List<InvoiceDTO> getAllInvoicesWithPaging(@PathVariable Integer page, @PathVariable Integer size, HttpServletResponse response){
-        long invoicesCount = invoiceService.getInvoicesCount();
-        response.setHeader("Header", String.valueOf(invoicesCount));
         return invoiceService.findAllInvoicesWithPaging(page,size);
     }
 
     @GetMapping("/{page}/{size}/{id}")
-    public List<InvoiceDTO> getAllInvoicesWithSortingAndPaging(@PathVariable Integer page, @PathVariable Integer size, @PathVariable(value = "id") String sortParam){
-        return invoiceService.findAllInvoicesWithSortingAndPaging(page,size,sortParam);
+    public List<InvoiceDTO> getAllInvoicesWithDesSortingAndPaging(@PathVariable Integer page, @PathVariable Integer size, @PathVariable(value = "id") String sortParam){
+        return invoiceService.findAllInvoicesWithSortingDesAndPaging(page,size,sortParam);
     }
+
+    @GetMapping("/{page}/{size}/{id}/asc")
+    public List<InvoiceDTO> getAllInvoicesWithAscSortingAndPaging(@PathVariable Integer page, @PathVariable Integer size, @PathVariable(value = "id") String sortParam){
+        return invoiceService.findAllInvoicesWithSortingAseAndPaging(page,size,sortParam);
+    }
+
 
 
 }
