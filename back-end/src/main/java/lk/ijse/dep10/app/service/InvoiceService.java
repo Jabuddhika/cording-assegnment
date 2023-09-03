@@ -15,5 +15,9 @@ public interface InvoiceService {
 
      Optional<DetailDTO2> findTotalPaidAmountByQuery(Integer invoiceId) throws Exception;
 
+     long getInvoicesCount();
+
+
+
 
 }

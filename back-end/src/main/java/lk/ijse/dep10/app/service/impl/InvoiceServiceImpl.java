@@ -6,6 +6,7 @@ import lk.ijse.dep10.app.repository.DetailRepository;
 import lk.ijse.dep10.app.repository.InvoiceRepository;
 import lk.ijse.dep10.app.repository.QueryRepository;
 import lk.ijse.dep10.app.service.InvoiceService;
+import lk.ijse.dep10.app.service.exception.RecordNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,16 +25,12 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     private final InvoiceRepository invoiceRepository;
 
-    private final DetailRepository detailRepository;
-
-
     private final QueryRepository queryRepository;
 
     private final ModelMapper mapper;
 
-    public InvoiceServiceImpl(InvoiceRepository invoiceRepository, DetailRepository detailRepository, QueryRepository queryRepository, ModelMapper mapper) {
+    public InvoiceServiceImpl(InvoiceRepository invoiceRepository,QueryRepository queryRepository, ModelMapper mapper) {
         this.invoiceRepository = invoiceRepository;
-        this.detailRepository = detailRepository;
         this.queryRepository = queryRepository;
         this.mapper = mapper;
     }
@@ -41,26 +38,21 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public List<InvoiceDTO> findAllInvoicesWithPaging(int page,int size) {
         Pageable pageable = PageRequest.of(page, size);
-        List<InvoiceDTO> invoiceDTOList = invoiceRepository.findAllInvoicesWithPaging(pageable).stream().
+        List<InvoiceDTO> invoiceDTOList = invoiceRepository.findAll(pageable).stream().
                 map(elm -> mapper.map(elm, InvoiceDTO.class)).collect(Collectors.toList());
 
-        invoiceDTOList.stream().forEach(elm->{
-
-            if(findTotalPaidAmountByQuery(elm.getId()).isPresent()){
-              elm.setTotalPaidAmount(findTotalPaidAmountByQuery(elm.getId()).get().getTotalPaidAmount());
-            }else {
-                elm.setTotalPaidAmount(new BigDecimal(0));
-            }
-
-        });
-        return invoiceDTOList;
+      return setTotalPaidAmountWithFullCount(invoiceDTOList);
 
     }
     @Override
     public List<InvoiceDTO> findAllInvoicesWithSortingAndPaging(int page,int size,String sortValue) {
-        Sort id = Sort.by(Sort.Direction.ASC,sortValue);
+        Sort id = Sort.by(Sort.Direction.DESC,sortValue);
         Pageable pageable = PageRequest.of(page, size,id);
-        return invoiceRepository.findAllInvoicesWithSortingAndPaging(pageable).stream().map(elm->mapper.map(elm,InvoiceDTO.class)).collect(Collectors.toList());
+        List<InvoiceDTO> invoiceDTOList = invoiceRepository.findAll(pageable).stream().
+                map(elm -> mapper.map(elm, InvoiceDTO.class)).collect(Collectors.toList());
+
+      return setTotalPaidAmountWithFullCount(invoiceDTOList);
+
     }
 
 
@@ -71,6 +63,28 @@ public class InvoiceServiceImpl implements InvoiceService {
         } catch (Exception e) {
            return Optional.empty();
         }
+    }
+
+    @Override
+    public long getInvoicesCount() {
+
+        return invoiceRepository.count();
+    }
+
+
+    private List<InvoiceDTO> setTotalPaidAmountWithFullCount(List<InvoiceDTO> invoiceDTOList){
+        invoiceDTOList.stream().forEach(elm->{
+
+
+            if(findTotalPaidAmountByQuery(elm.getId()).isPresent()){
+                elm.setTotalPaidAmount(findTotalPaidAmountByQuery(elm.getId()).get().getTotalPaidAmount());
+            }else {
+                elm.setTotalPaidAmount(new BigDecimal(0));
+            }
+
+        });
+        return invoiceDTOList;
+
     }
 
 

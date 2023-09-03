@@ -4,6 +4,7 @@ import lk.ijse.dep10.app.dto.InvoiceDTO;
 import lk.ijse.dep10.app.service.InvoiceService;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
@@ -17,8 +18,9 @@ public class InvoiceRestController {
         this.invoiceService = invoiceService;
     }
     @GetMapping("/{page}/{size}")
-    public List<InvoiceDTO> getAllInvoicesWithPaging(@PathVariable Integer page, @PathVariable Integer size){
-        System.out.println("page/size");
+    public List<InvoiceDTO> getAllInvoicesWithPaging(@PathVariable Integer page, @PathVariable Integer size, HttpServletResponse response){
+        long invoicesCount = invoiceService.getInvoicesCount();
+        response.setHeader("Header", String.valueOf(invoicesCount));
         return invoiceService.findAllInvoicesWithPaging(page,size);
     }
 
